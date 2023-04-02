@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -81,10 +82,18 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItemV5(Item item) {
         itemRepository.save(item);
         return "redirect:/basic/items/" + item.getId();  // POST로 저장 처리 한후 새로고침하면 기존에는 계속 마지막 요청을 다시하여 계속 저장하게된다. 그래서 저장 처리 후 상품상세로 리다이렉트로 처리 (PRG) POST/REDIRECT/GET
+    }
+
+    @PostMapping("/add")
+    public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
+        Item saveItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", saveItem.getId());  // redirectAttribute설정
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/basic/items/{itemId}";  // redirectAttribute설정하면 pathvariable 사용가능. status는 지정안해서 queryParam으로 감.
     }
 
     @GetMapping("/{itemId}/edit")
