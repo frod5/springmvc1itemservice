@@ -73,12 +73,18 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItemV4(Item item) {
         itemRepository.save(item);
 //        model.addAttribute("item",item);  @ModelAttribute 사용하면 자동으로 이 로직을 수행해준다. 생략가능. Model 자동 추가
 
         return "basic/item";
+    }
+
+    @PostMapping("/add")
+    public String addItemV5(Item item) {
+        itemRepository.save(item);
+        return "redirect:/basic/items/" + item.getId();  // POST로 저장 처리 한후 새로고침하면 기존에는 계속 마지막 요청을 다시하여 계속 저장하게된다. 그래서 저장 처리 후 상품상세로 리다이렉트로 처리 (PRG) POST/REDIRECT/GET
     }
 
     @GetMapping("/{itemId}/edit")
